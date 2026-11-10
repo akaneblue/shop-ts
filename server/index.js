@@ -1,12 +1,17 @@
 import express from 'express'
 import pg from 'pg'
+import cors from 'cors'
 
 // express 객체 생성
 const app = express();
 const PORT = 8000
 
+// cors - 요청하는 모든 주소 허용
+app.use(cors());
+
 // 본문 요청 파싱
 app.use(express.json());
+
 
 // DB 연결
 const db = new pg.Client({
@@ -93,6 +98,49 @@ app.delete("/api/products/:id", async(req, res) => {
     } catch (error) {
         console.error("상품 삭제 중 오류 발생", error);
         res.send("상품 삭제 중 오류 발생");
+    }
+})
+
+// 회원 목록
+app.get("/api/users", async(req, res) => {
+    const sql = "SELECT * FROM users";
+    try {
+        const result = await db.query(sql);
+        res.send(result.rows);
+    } catch (error) {
+        console.log("회원 조회 오류", error);
+        res.send("회원 조회 오류");
+        
+    }
+})
+
+// 로그인
+app.post("/api/users/login", async(req, res) => {
+    const {username, password} = req.body;
+    const sql = "SELECT * FROM users WHERE username = $1 AND password = $2";
+    try {
+        const result = await db.query(sql,[username, password]);
+        if(result.rows.length === 0){
+            return res.send("아이디 또는 비밀번호가 일치하지 않습니다.")
+        }
+        res.send({message: "로그인 성공", user: result.rows[0]});
+    } catch (error) {
+        console.log("로그인 오류", error);
+        res.send("로그인 오류");
+        
+    }
+})
+
+// 회원가입
+app.post("/api/users", async(req, res) => {
+    const {username, password, name, email} = req.body;
+    const sql = "INSERT INTO users (username, password, name, email) VALUES ($1, $2, $3, $4)";
+    try {
+        await db.query(sql,[username, password, name, email]);
+        res.send("회원가입 완료")
+    } catch (error) {
+        console.log("회원 가입 오류", error);
+        res.send("회원 가입 오류");
     }
 })
 

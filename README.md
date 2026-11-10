@@ -4,7 +4,7 @@
     - 회원
 
 2. Server (Express)
-    - DB - PostgreSQL
+    - DB : PostgreSQL
     - 상품 API
     - 회원 API
 

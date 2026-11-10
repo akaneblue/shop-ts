@@ -32,7 +32,7 @@ const SignUp = () => {
     }
 
     // 폼 제출 핸들러
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();  //기본 동작 막기
 
         // 유효성 검사
@@ -63,15 +63,19 @@ const SignUp = () => {
         }
 
         // 회원 가입 함수 호출
-        signup({
+        try {
+            await signup({
             username,
             password,
             name: name.trim(),
             email: email.trim(),
             role: "user"
-        });
-        alert("회원가입이 완료되었습니다. 로그인 해주세요");
-        navigate('/'); //로그인 페이지로 이동
+            });
+            alert("회원가입이 완료되었습니다. 로그인 해주세요");
+            navigate('/signin'); //로그인 페이지로 이동            
+        } catch (error) {
+            setError("회원가입 중 오류가 발생하였습니다.");
+        }
     }
 
     return(
