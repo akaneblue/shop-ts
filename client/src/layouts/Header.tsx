@@ -1,4 +1,4 @@
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import { useCart } from '../context/CartContext';
 import { useUser } from '../context/UserContext';
 import type React from 'react';
@@ -6,8 +6,9 @@ import type React from 'react';
 const Header = () => {
     // totalQuantity() 가져오기
     // 장바구니() -> 표시하기
-    const {totalQuantity} = useCart();
+    const {totalQuantity, clearCart} = useCart();
     const {currentUser, logout} = useUser();
+    const navigate = useNavigate();
 
     // 관리자인지 확인
     const isAdmin = currentUser?.role === "admin";
@@ -19,6 +20,13 @@ const Header = () => {
             return;
         }
 
+    }
+
+    // 로그아웃시 장바구니 비우기
+    const handleLogout = () => {
+        clearCart();
+        logout();
+        navigate("/")
     }
 
     return(
@@ -33,8 +41,8 @@ const Header = () => {
                 {isAdmin && <Link to='/admin'>관리자</Link>}
                 {currentUser ? (
                     <>
-                        <span>{currentUser.name}님</span>
-                        <button onClick={logout}>로그아웃</button>
+                        <Link to="/mypage">{currentUser.name}님</Link>
+                        <button onClick={handleLogout}>로그아웃</button>
                     </>
                 ) : (
                      <Link to='/signin'>로그인</Link>
