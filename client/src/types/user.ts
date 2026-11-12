@@ -34,5 +34,8 @@ export interface LoginForm{
     password: string;
 }
 
+// 정보 수정 폼
+export type UserUpdateForm = Pick<User, "name" | "email">
+
 
 

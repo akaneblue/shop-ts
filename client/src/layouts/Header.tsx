@@ -23,10 +23,10 @@ const Header = () => {
     }
 
     // 로그아웃시 장바구니 비우기
-    const handleLogout = () => {
+    const handleLogout = async () => {
+        await logout();   // 서버에 로그아웃 요청이 끝날 때까지 기다림
         clearCart();
-        logout();
-        navigate("/")
+        navigate('/');
     }
 
     return(
